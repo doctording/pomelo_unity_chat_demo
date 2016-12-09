@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using SimpleJson;
 using Pomelo.DotNetClient;
 using System.Threading;
+using UnityEngine.UI;
 
 public class LoginGUI : MonoBehaviour
 {
@@ -15,16 +16,21 @@ public class LoginGUI : MonoBehaviour
 
     public static PomeloClient pomeloClient = null;
 
-    public Texture2D pomelo;
-    public GUISkin pomeloSkin;
-    public GUIStyle pomeloStyle;
-
     protected bool _bNeedLoadScene = false;
+
+    private Button btn_login;
+    private InputField infield_username;
+    private InputField infield_channelid;
 
     void Start()
     {
-        pomelo = (Texture2D)Resources.Load("pomelo");
-        pomeloStyle.normal.textColor = Color.black;
+        // 找到各个控件
+        infield_username = GameObject.FindGameObjectWithTag("username").GetComponent<InputField>();
+        infield_channelid = GameObject.FindGameObjectWithTag("channel").GetComponent<InputField>();
+        btn_login = GameObject.FindGameObjectWithTag("btn_login").GetComponent<Button>();
+
+        // 添加按钮的事件监听方法
+        btn_login.onClick.AddListener(Login);
     }
 
     //When quit, release resource
@@ -41,7 +47,8 @@ public class LoginGUI : MonoBehaviour
 
         if(_bNeedLoadScene)
         {
-            Application.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+            // 场景切换
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 
@@ -57,8 +64,13 @@ public class LoginGUI : MonoBehaviour
     //Login the chat application and new PomeloClient.
     void Login()
     {
-        //string host = "120.27.163.31";
-        string host = "127.0.0.1";
+        userName = infield_username.text; // 获取输入框中的信息
+        channel = infield_channelid.text;
+
+        if (userName == "" || channel == "")
+            return;
+
+        string host = "127.0.0.1"; // game-server的host和port
         int port = 3014;
 
         pomeloClient = new PomeloClient();
@@ -123,26 +135,4 @@ public class LoginGUI : MonoBehaviour
             });
         }
     }
-
-    void OnGUI()
-    {
-        GUI.skin = pomeloSkin;
-        GUI.color = Color.yellow;
-        GUI.enabled = true;
-        GUI.Label(new Rect(160, 50, pomelo.width, pomelo.height), pomelo);
-
-        GUI.Label(new Rect(75, 350, 50, 20), "name:", pomeloStyle);
-        userName = GUI.TextField(new Rect(125, 350, 90, 20), userName);
-        GUI.Label(new Rect(225, 350, 55, 20), "channel:", pomeloStyle);
-        channel = GUI.TextField(new Rect(280, 350, 100, 20), channel);
-
-        if (GUI.Button(new Rect(410, 350, 70, 20), "OK"))
-        {
-            if (pomeloClient == null)
-            {
-                Login();
-            }
-        }
-    }
-
 }

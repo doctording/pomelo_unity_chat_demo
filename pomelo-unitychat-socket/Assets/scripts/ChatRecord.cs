@@ -1,6 +1,5 @@
 using System;
 
-
 public class ChatRecord
 {
 	public string name {get;set;}
@@ -16,5 +15,3 @@ public class ChatRecord
 		this.dialog = userDialog;
 	}
 }
-
-

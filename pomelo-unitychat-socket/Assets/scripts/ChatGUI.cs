@@ -5,37 +5,39 @@ using System.Collections;
 using System.Collections.Generic;
 using SimpleJson;
 using Pomelo.DotNetClient;
+using UnityEngine.UI;
 
 public class ChatGUI : MonoBehaviour
 {
+    // 直接从login 获取users和PomeloClient
     private string userName = LoginGUI.userName;
     private PomeloClient pclient = LoginGUI.pomeloClient;
+
 
     private Vector3 chatScrollPosition;
     private Vector3 userScrollPosition;
 
     private string playerName;
 
-    private Rect chatWindow;
+    public static string inputField = "";   // 输入的聊天内容
 
-    private Rect usersWindow;
-
-    public GUIStyle pomelo_label_Style;
-
-    public static string inputField = "";
-
-    private ArrayList chatRecords = null;
-    private ArrayList userList = null;
+    private ArrayList chatRecords = null;   // 记录数据的list
+    private ArrayList userList = null; 
 
     public bool debug = true;
 
+    public ScrollRect scroll_msg;
+    public ScrollRect scroll;
+
+    public InputField inField_msg;
+    public Button btn;
+
     void Start()
     {
+        Application.runInBackground = true;
+        /* ----------------------------------------- */
         chatRecords = new ArrayList();
         userList = new ArrayList();
-        chatWindow = new Rect(0, 0, Screen.width - 150, Screen.height);
-        usersWindow = new Rect(Screen.width - 150, 0, 200, Screen.height);
-        pomelo_label_Style.normal.textColor = Color.red; // 红色显示
 
         InitUserWindow();
 
@@ -54,6 +56,18 @@ public class ChatGUI : MonoBehaviour
             addMessage(data);
         });
 
+
+        // 添加按钮的事件监听方法
+        btn.onClick.AddListener(msgSend);
+    }
+
+    void msgSend()
+    {
+        inputField = inField_msg.text; // 获取输入框中的信息
+        inField_msg.text = "";
+        if (inputField == null || inputField == "")
+            return;
+        sendMessage(); 
     }
 
     //When quit, release resource
@@ -68,6 +82,39 @@ public class ChatGUI : MonoBehaviour
             Application.Quit();
         }
 
+        // userlist 
+        foreach (Transform child in scroll.transform.FindChild("Viewport").FindChild("Content").transform)
+        {
+            //Text it = child.gameObject.GetComponent<Text>();
+            Destroy(child.gameObject);
+        }
+        foreach (string userName in userList)
+        {
+            GameObject t2 = new GameObject();
+            t2.AddComponent<Text>();
+            t2.GetComponent<Text>().text = userName;
+            t2.GetComponent<Text>().font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            RectTransform rectTransform2 = t2.GetComponent<RectTransform>();
+            rectTransform2.localPosition = new Vector3(0, 0, 0);
+            t2.transform.parent = scroll.transform.FindChild("Viewport").FindChild("Content");
+        }
+
+        // msglist
+        foreach (Transform child in  scroll_msg.transform.FindChild("Viewport").FindChild("Content").transform)
+        {
+            Destroy(child.gameObject);
+        } 
+        foreach (ChatRecord cr in chatRecords)
+        {
+            string s = cr.name + ": " + cr.dialog;
+            GameObject t3 = new GameObject();
+            t3.AddComponent<Text>();
+            t3.GetComponent<Text>().text = s;
+            t3.GetComponent<Text>().font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            RectTransform rectTransform2 = t3.GetComponent<RectTransform>();
+            rectTransform2.localPosition = new Vector3(0, 0, 0);
+            t3.transform.parent = scroll_msg.transform.FindChild("Viewport").FindChild("Content");
+        }
     }
 
     //When quit, release resource
@@ -78,53 +125,6 @@ public class ChatGUI : MonoBehaviour
             pclient.disconnect();
         }
     }
-
-    void OnGUI()
-    {
-        GUI.backgroundColor = Color.grey;
-        chatWindow = GUI.Window(1, chatWindow, GlobalChatWindow, "");
-        usersWindow = GUI.Window(2, usersWindow, GlobalUsersWindow, "");
-    }
-
-    //The window for userlist
-    void GlobalUsersWindow(int id)
-    {
-        userScrollPosition = GUILayout.BeginScrollView(userScrollPosition);
-
-        foreach (string userName in userList)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(userName, pomelo_label_Style);
-            GUILayout.EndHorizontal();
-        }
-
-        GUILayout.EndScrollView();
-    }
-
-    //The window for chat records.
-    void GlobalChatWindow(int id)
-    {
-        chatScrollPosition = GUILayout.BeginScrollView(chatScrollPosition);
-
-        foreach (ChatRecord cr in chatRecords)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(cr.name + ": " + cr.dialog, pomelo_label_Style);
-            GUILayout.EndHorizontal();
-            GUILayout.Space(3);
-        }
-
-        GUILayout.EndScrollView();
-
-        if (Event.current.type.ToString() == EventType.keyDown.ToString() && Event.current.character.ToString() == "\n" && inputField.Length > 0)
-        {
-            //if (Event.current.type.ToString() == EventType.mouseDown.ToString() && Event.current.character)
-            HitEnter();
-
-        }
-        inputField = GUILayout.TextField(inputField);
-    }
-
 
     void HitEnter()
     {
@@ -176,7 +176,6 @@ public class ChatGUI : MonoBehaviour
         {
             chatRecords.Add(new ChatRecord(fromName.ToString(), msg.ToString()));
         }
-
     }
 
     void sendMessage()
@@ -232,5 +231,3 @@ public class ChatGUI : MonoBehaviour
     }
 
 }
-
-
