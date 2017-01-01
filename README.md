@@ -1,11 +1,11 @@
 
 前言
 ===
-本项目是一个简单的pomelo聊天小实例，可以学习下如何在unity中是用pomelo，与服务器完成交互。
+本分支项目是一个简单的pomelo聊天小实例，采用unity5.4.1版本，可以学习下如何在unity中是用pomelo，与服务器完成交互。
 
 关于如何clone非master分支的仓库：
-
-利用-b 指令选择合适的分支
+===
+利用-b指令选择合适的分支
 
 例：git clone -b unity5.4.1 git@github.com:**
 
@@ -21,7 +21,7 @@ NetEase chatofpomelo
 
 客户端
 ===
-unity3d继承pomelo的各种库文件，实现聊天功能
+unity3d5.4.1 使用pomelo的各种库文件，实现聊天功能
 
 
 * ip采用了本地127.0.0.1,可能需要自行修改。
@@ -31,13 +31,12 @@ unity3d继承pomelo的各种库文件，实现聊天功能
 * Unity vs Debug 可以baidu、google
 
 
-
-运行截图
+截图
 ===
+可以在场景中看到运行界面，而不是采用OnGUI的画图的方法
+![](http://i.imgur.com/856mpvb.png)
 
-![](http://i.imgur.com/INhiuuY.png)
-
-![](http://i.imgur.com/FkQOtvS.png)
+![](http://i.imgur.com/FZkFee1.png)
 
 
 注
