@@ -13,11 +13,16 @@
 
 关于如何保持自己fork的项目与源仓库同步更新
 ===
-1.首先用git remote -v确定一下是否建立了主repo的远程源,如果只有origin的两个fetch和push，则需要第2步,否则直接第3步开始
-2.git remote add upstream 源仓库的URL （这个命令用来添加源仓库）
-3.git fetch upstream 
-4.git merge upstream/unity5.4.1
-5.git push orgin 5.4.1
+1. 首先用git remote -v确定一下是否建立了主repo的远程源,如果只有origin的两个fetch和push，则需要第2步,否则直接第3步开始
+
+2. git remote add upstream 源仓库的URL （这个命令用来添加源仓库）
+
+3. git fetch upstream 
+
+4. git merge upstream/unity5.4.1
+
+5. git push orgin 5.4.1
+
 （注意，到第4步的时候其实你本地已经更新好了，第5步就是更新的网络上你自己的本地仓库）
 
 服务端
