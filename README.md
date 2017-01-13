@@ -9,6 +9,14 @@ NetEase chatofpomelo
 
 只需要安装模块，修改配置，运行game-server
 
+服务端测试环境
+
+* node 5.8.0 
+
+* pomelo 1.2.3 
+
+* ubuntu 16.04
+
 客户端
 ===
 unity3d继承pomelo的各种库文件，实现聊天功能
